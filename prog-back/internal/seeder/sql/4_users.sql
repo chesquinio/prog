@@ -1,0 +1,2 @@
+-- users seed: we create users programmatically in Go to ensure password hashing and confirmation flags.
+-- This file intentionally left blank.

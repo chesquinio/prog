@@ -1,0 +1,2 @@
+-- reservations seed is intentionally left minimal: reservations are created programmatically in seeder.go
+-- This file can be used for raw SQL examples if desired.

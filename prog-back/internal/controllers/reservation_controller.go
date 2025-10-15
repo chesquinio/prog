@@ -15,6 +15,7 @@ var reservationService = services.NewReservationService()
 
 type createReservationReq struct {
 	RoomID             uint   `json:"room_id" binding:"required"`
+	ClassID            *uint  `json:"class_id"`
 	StartTime          string `json:"start_time" binding:"required"` // RFC3339
 	EndTime            string `json:"end_time" binding:"required"`
 	Purpose            string `json:"purpose"`
@@ -48,6 +49,7 @@ func CreateReservation(c *gin.Context) {
 	resv := &models.Reservation{
 		RoomID:             req.RoomID,
 		UserID:             uid,
+		ClassID:            req.ClassID,
 		StartTime:          st,
 		EndTime:            et,
 		Purpose:            req.Purpose,

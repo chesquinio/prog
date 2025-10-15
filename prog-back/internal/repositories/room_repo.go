@@ -13,7 +13,7 @@ func (r *RoomRepository) Create(room *models.Room) error { return db.GetDB().Cre
 
 func (r *RoomRepository) GetAll() ([]models.Room, error) {
 	var list []models.Room
-	if err := db.GetDB().Find(&list).Error; err != nil {
+	if err := db.GetDB().Preload("Building").Find(&list).Error; err != nil {
 		return nil, err
 	}
 	return list, nil
@@ -21,7 +21,7 @@ func (r *RoomRepository) GetAll() ([]models.Room, error) {
 
 func (r *RoomRepository) GetByID(id uint) (*models.Room, error) {
 	var m models.Room
-	if err := db.GetDB().First(&m, id).Error; err != nil {
+	if err := db.GetDB().Preload("Building").First(&m, id).Error; err != nil {
 		return nil, err
 	}
 	return &m, nil

@@ -14,47 +14,48 @@ type ReservationService struct {
 }
 
 func NewReservationService() *ReservationService {
-	return &ReservationService{repo: repositories.NewReservationRepository(), roomRepo: repositories.NewRoomRepository()}
+	return &ReservationService{
+		repo:     repositories.NewReservationRepository(),
+		roomRepo: repositories.NewRoomRepository(),
+	}
 }
 
 func (s *ReservationService) Create(resv *models.Reservation) error {
-	// validate capacity
+	// Validaciones: no solapamiento y capacidad
+	overlaps, err := s.repo.HasOverlapping(resv.RoomID, resv.StartTime, resv.EndTime)
+	if err != nil {
+		return err
+	}
+	if overlaps {
+		return errors.New("time slot not available (overlap)")
+	}
+
+	// Verificar capacidad del aula
 	room, err := s.roomRepo.GetByID(resv.RoomID)
 	if err != nil {
-		return err
+		return errors.New("room not found")
 	}
 	if resv.EstimatedAttendees > room.Capacity {
-		return errors.New("estimated attendees exceed room capacity")
-	}
-	// validate times
-	if !resv.StartTime.Before(resv.EndTime) {
-		return errors.New("start_time must be before end_time")
-	}
-	// overlapping
-	overlap, err := s.repo.HasOverlapping(resv.RoomID, resv.StartTime, resv.EndTime)
-	if err != nil {
-		return err
-	}
-	if overlap {
-		return errors.New("time slot overlaps with existing reservation")
+		return errors.New("estimated attendees exceeds room capacity")
 	}
 
 	resv.Status = "ACTIVE"
-	resv.CreatedAt = time.Now()
-	resv.UpdatedAt = time.Now()
 	return s.repo.Create(resv)
 }
 
-func (s *ReservationService) Get(id uint) (*models.Reservation, error) { return s.repo.GetByID(id) }
 func (s *ReservationService) List(filter map[string]interface{}, from, to *time.Time) ([]models.Reservation, error) {
 	return s.repo.List(filter, from, to)
 }
+
+func (s *ReservationService) Get(id uint) (*models.Reservation, error) {
+	return s.repo.GetByID(id)
+}
+
 func (s *ReservationService) Cancel(id uint) error {
-	r, err := s.repo.GetByID(id)
+	resv, err := s.repo.GetByID(id)
 	if err != nil {
 		return err
 	}
-	r.Status = "CANCELLED"
-	r.UpdatedAt = time.Now()
-	return s.repo.Update(r)
+	resv.Status = "CANCELLED"
+	return s.repo.Update(resv)
 }

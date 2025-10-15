@@ -1,32 +1,24 @@
-import "../globals.css";
-import { ReactNode } from "react";
-import { AuthProvider } from "../hooks/useAuth";
-import { ReactQueryProvider } from "../lib/queryClient";
-import { Toaster } from "react-hot-toast";
-import Topbar from "@/components/layout/Topbar";
-import Sidebar from "@/components/layout/Sidebar";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { Providers } from "./providers";
 
-export const metadata = {
-  title: "Prog - Reservas",
-  description: "Frontend para la plataforma de reservas de aulas",
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "AulaReserve - Sistema de Reservas de Aulas",
+  description: "Plataforma de reservas de aulas para universidades",
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="es">
-      <body>
-        <ReactQueryProvider>
-          <AuthProvider>
-            <div className="min-h-screen bg-gray-50">
-              <Topbar />
-              <div className="container mx-auto p-4 flex gap-6">
-                <Sidebar />
-                <main className="flex-1">{children}</main>
-              </div>
-            </div>
-            <Toaster />
-          </AuthProvider>
-        </ReactQueryProvider>
+      <body className={inter.className}>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

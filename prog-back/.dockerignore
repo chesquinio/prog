@@ -1,0 +1,44 @@
+# Archivos de Git
+.git
+.gitignore
+
+# Archivos de entorno
+.env
+.env.local
+
+# Archivos compilados
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+app
+programacion-backend
+
+# Archivos de test
+*_test.go
+*.test
+*.out
+
+# Dependencias
+vendor/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Documentación
+README.md
+PLANNING-BACKEND.md
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml

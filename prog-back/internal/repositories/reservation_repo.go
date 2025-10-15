@@ -17,7 +17,7 @@ func (r *ReservationRepository) Create(resv *models.Reservation) error {
 
 func (r *ReservationRepository) GetByID(id uint) (*models.Reservation, error) {
 	var rsv models.Reservation
-	if err := db.GetDB().First(&rsv, id).Error; err != nil {
+	if err := db.GetDB().Preload("Room").Preload("User").Preload("Class").First(&rsv, id).Error; err != nil {
 		return nil, err
 	}
 	return &rsv, nil
@@ -25,7 +25,7 @@ func (r *ReservationRepository) GetByID(id uint) (*models.Reservation, error) {
 
 func (r *ReservationRepository) List(filter map[string]interface{}, from, to *time.Time) ([]models.Reservation, error) {
 	var list []models.Reservation
-	q := db.GetDB().Model(&models.Reservation{})
+	q := db.GetDB().Model(&models.Reservation{}).Preload("Room").Preload("User").Preload("Class")
 	for k, v := range filter {
 		q = q.Where(k+" = ?", v)
 	}

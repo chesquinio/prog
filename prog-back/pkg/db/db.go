@@ -37,7 +37,14 @@ func InitDB() error {
 	DB = db
 
 	// Auto-migrate modelos esenciales
-	err = DB.AutoMigrate(&models.User{}, &models.Building{}, &models.Room{}, &models.Reservation{})
+	err = DB.AutoMigrate(
+		&models.User{},
+		&models.Building{},
+		&models.Room{},
+		&models.Class{},
+		&models.ClassStudent{},
+		&models.Reservation{},
+	)
 	if err != nil {
 		log.WithError(err).Error("Error en AutoMigrate")
 		return err

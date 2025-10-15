@@ -32,3 +32,19 @@ func (r *UserRepository) GetByID(id uint) (*models.User, error) {
 func (r *UserRepository) Update(user *models.User) error {
 	return db.GetDB().Save(user).Error
 }
+
+func (r *UserRepository) FindWithFilters(role string, isConfirmed *bool) ([]models.User, error) {
+	query := db.GetDB().Model(&models.User{})
+
+	if role != "" {
+		query = query.Where("role = ?", role)
+	}
+
+	if isConfirmed != nil {
+		query = query.Where("is_confirmed = ?", *isConfirmed)
+	}
+
+	var users []models.User
+	err := query.Find(&users).Error
+	return users, err
+}

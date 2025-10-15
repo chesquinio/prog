@@ -43,7 +43,7 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	token, err := authService.Login(req.Email, req.Password)
+	token, user, err := authService.LoginWithUser(req.Email, req.Password)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
@@ -52,7 +52,11 @@ func Login(c *gin.Context) {
 	cookieName := "access_token"
 	// cookie expiry: match token expiration (24h)
 	c.SetCookie(cookieName, token, 60*60*24, "/", "", false, true)
-	c.JSON(http.StatusOK, gin.H{"access_token": token, "token_type": "bearer"})
+	c.JSON(http.StatusOK, gin.H{
+		"access_token": token,
+		"token_type":   "bearer",
+		"user":         user,
+	})
 }
 
 func ConfirmUser(c *gin.Context) {
@@ -88,7 +92,8 @@ func AuthMe(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"id": u.ID, "name": u.Name, "email": u.Email, "role": u.Role})
+	// Retornar el usuario completo
+	c.JSON(http.StatusOK, u)
 }
 
 func Logout(c *gin.Context) {

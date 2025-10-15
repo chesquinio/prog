@@ -26,7 +26,7 @@ func CreateRoom(c *gin.Context) {
 }
 
 func ListRooms(c *gin.Context) {
-	list, err := roomService.List()
+	list, err := roomService.List(0) // Sin filtro de edificio
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

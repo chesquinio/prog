@@ -69,6 +69,36 @@ func (s *AuthService) Login(email, password string) (string, error) {
 	return tokStr, nil
 }
 
+func (s *AuthService) LoginWithUser(email, password string) (string, *models.User, error) {
+	u, err := s.repo.GetByEmail(email)
+	if err != nil {
+		return "", nil, err
+	}
+	if !utils.CheckPasswordHash(password, u.PasswordHash) {
+		return "", nil, errors.New("invalid credentials")
+	}
+	if !u.IsConfirmed {
+		return "", nil, errors.New("account not confirmed")
+	}
+
+	// generar JWT
+	secret := os.Getenv("JWT_SECRET")
+	if secret == "" {
+		secret = "dev_secret"
+	}
+	expHours := 24
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub":  u.ID,
+		"role": u.Role,
+		"exp":  time.Now().Add(time.Duration(expHours) * time.Hour).Unix(),
+	})
+	tokStr, err := token.SignedString([]byte(secret))
+	if err != nil {
+		return "", nil, err
+	}
+	return tokStr, u, nil
+}
+
 func (s *AuthService) ConfirmUser(id uint) error {
 	u, err := s.repo.GetByID(id)
 	if err != nil {

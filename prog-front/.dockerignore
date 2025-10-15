@@ -1,9 +1,52 @@
+# Dependencias
 node_modules
-.next
-.dist
-.env
-.DS_Store
-.vscode
 npm-debug.log
+yarn-error.log
+yarn.lock
+pnpm-lock.yaml
+
+# Archivos de Next.js
 .next
+out
+dist
 build
+
+# Archivos de prueba
+coverage
+.nyc_output
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Archivos de desarrollo
+.env*.local
+.env.development
+.env.test
+
+# Archivos de IDE y editores
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentación y planificación
+*.md
+README.md
+PLANNING*.md
+PROGRESS.md
+TROUBLESHOOTING.md
+PHASE*.md
+BACKEND-CHANGES.md
+
+# Otros
+.eslintcache
+.vercel
+.turbo

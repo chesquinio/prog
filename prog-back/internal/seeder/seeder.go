@@ -139,8 +139,8 @@ func runSQLSeeds(dbConn *gorm.DB) error {
 	log.WithField("err", err).Warn("No hay seeds embebidos; intentando /app/sql")
 	files, ferr := os.ReadDir("/app/sql")
 	if ferr != nil {
-		log.WithError(ferr).Error("No se pudo leer /app/sql")
-		return ferr
+		log.WithError(ferr).Warn("No se pudo leer /app/sql, omitiendo seeds SQL opcionales")
+		return nil // No es un error fatal, los seeds SQL son opcionales
 	}
 	for _, f := range files {
 		if f.IsDir() {
